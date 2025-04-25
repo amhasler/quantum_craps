@@ -4,6 +4,7 @@ import time
 # Use current time in nanoseconds as seed
 seed_value = time.time_ns()
 random.seed(seed_value)
+print(random.seed)
 
 starting_bankroll = 1000 # Very variable. If it's higher table minimum this should be higher to avoid running out of money
 min_bet = 10 # This should be a variable. What if it's a $25 minimum bet table (very common)
