@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IPython and Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Output and temporary files
+*.log
+*.aux
+*.out
+*.toc
+*.lof
+*.lot
+
+# OS system files
+.DS_Store
+Thumbs.db
+
+# Simulation outputs
+data/
+plots/
+
+# LaTeX build artifacts
+*.gz
+*.bbl
+*.blg
+
+# Editor settings (optional)
+.vscode/
+.idea/
+
