@@ -1,0 +1,63 @@
+# Quantum Craps Simulation
+
+Spring 2025
+
+Author: Adam Hasler
+
+This project explores a key research question:
+
+> **Can quantum-rational and QBist agents meaningfully exist and act within a classical environment?**
+
+We simulate classical and quantum-inspired versions of the casino game **craps**, modeling three distinct types of agents:
+- A **classical actor**, who plays by standard craps strategies, aiming to maximize expected return through odds bets.
+- A **quantum-inspired actor**, who modifies how probabilities are assigned and combined, based on ideas like amplitude interference from quantum mechanics.
+- A **QBist actor**, who applies subjective Bayesian updating to their probability assessments based on personal belief states.
+
+Rather than assuming quantum advantage, this project critically examines whether quantum-rational decision-making has any coherent or meaningful application in a fundamentally classical system.
+
+---
+
+## Project Overview
+
+Deliverables include:
+- A full Python-based simulator
+- A research paper (LaTeX)
+- A research poster
+- A short oral presentation
+
+The project blends computational simulation with theoretical exploration of quantum mechanics, probability theory, and decision science.
+
+---
+
+## Repository Structure
+
+quantum_craps │
+├──  src # Source code
+├──── game_engine # Classical, quantum-inspired, and QBist craps engines
+├──── simulator # Simulation runner scripts
+├──── utils # Betting, dice, and formatting utilities
+├──── config # Simulation settings (e.g., JSON files)
+├── data # Saved simulation results
+├── paper # Research paper (LaTeX source and bibliography)
+├── poster # Research poster files
+├── slides # Presentation slides
+└── tests # Unit tests for gameplay modules
+
+
+---
+
+## How to Run
+
+1. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+
+2. Configure input parameters
+    Possible configurations include:
+    - Number of games run
+    - Strategy used (classical, quantum-inspired, qbist)
+
+3. Run simulation
+
+    python run.py
