@@ -1,8 +1,6 @@
-import json
+# Placeholder script
 
-with open('src/simulator/parameters.json') as f:
-    params = json.load(f)
-
-n_games = params['n_games']
-starting_bankroll = params['starting_bankroll']
-agent_type = params['agent']
+class Dummy:
+    def play_round(self, bankroll):
+        # Very simple dummy logic: lose $10 each round
+        return bankroll - 10
