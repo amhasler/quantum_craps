@@ -18,7 +18,7 @@ class DummyAgent:
 
 def load_config():
     # More robust call to json file
-    base_dir = os.path.dirname(__file__)  # This gets the directory where run.py is
+    base_dir = os.path.dirname(__file__)  # This gets the directory where run_simulation.py is
     config_path = os.path.join(base_dir, 'simulator', 'config.json')
 
     with open(config_path, 'r') as file:
