@@ -8,14 +8,6 @@
     "classical": {
       "name": "ClassicalAgent",
       "module": "agents.classical_agent"
-    },
-    "quantum": {
-      "name": "QuantumRationalAgent",
-      "module": "agents.quantum_rational_agent"
-    },
-    "qbist": {
-      "name": "QBistAgent",
-      "module": "agents.qbist_agent"
     }
   }
 }

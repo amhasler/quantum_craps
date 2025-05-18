@@ -1,0 +1,592 @@
+[
+  {
+    "id": "A1x1",
+    "description": "Place 1x Pass Line Odds",
+    "bets": [
+      {
+        "type": "pass_line_odds",
+        "amount": 10
+      }
+    ]
+  },
+  {
+    "id": "A2x1",
+    "description": "Place 2x Pass Line Odds",
+    "bets": [
+      {
+        "type": "pass_line_odds",
+        "amount": 20
+      }
+    ]
+  },
+  {
+    "id": "A3x1",
+    "description": "Place 3x Pass Line Odds",
+    "bets": [
+      {
+        "type": "pass_line_odds",
+        "amount": 30
+      }
+    ]
+  },
+  {
+    "id": "A4x1",
+    "description": "Come Line Bet (unassigned)",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      }
+    ]
+  },
+  {
+    "id": "A6x1",
+    "description": "Place 1x Odds on Come Point 4",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 4
+      }
+    ]
+  },
+  {
+    "id": "A7x1",
+    "description": "Place 2x Odds on Come Point 4",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 4
+      }
+    ]
+  },
+  {
+    "id": "A8x1",
+    "description": "Place 3x Odds on Come Point 4",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 30,
+        "point": 4
+      }
+    ]
+  },
+  {
+    "id": "A9x1",
+    "description": "Place 1x Odds on Come Point 5",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 5
+      }
+    ]
+  },
+  {
+    "id": "A10x1",
+    "description": "Place 2x Odds on Come Point 5",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 5
+      }
+    ]
+  },
+  {
+    "id": "A11x1",
+    "description": "Place 3x Odds on Come Point 5",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 30,
+        "point": 5
+      }
+    ]
+  },
+  {
+    "id": "A12x1",
+    "description": "Place 1x Odds on Come Point 6",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 6
+      }
+    ]
+  },
+  {
+    "id": "A13x1",
+    "description": "Place 2x Odds on Come Point 6",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 6
+      }
+    ]
+  },
+  {
+    "id": "A14x1",
+    "description": "Place 3x Odds on Come Point 6",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 30,
+        "point": 6
+      }
+    ]
+  },
+  {
+    "id": "A15x1",
+    "description": "Place 1x Odds on Come Point 8",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A16x1",
+    "description": "Place 2x Odds on Come Point 8",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A17x1",
+    "description": "Place 3x Odds on Come Point 8",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 30,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A18x1",
+    "description": "Place 1x Odds on Come Point 9",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A19x1",
+    "description": "Place 2x Odds on Come Point 9",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A20x1",
+    "description": "Place 3x Odds on Come Point 9",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 30,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A21x1",
+    "description": "Place 1x Odds on Come Point 10",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 10
+      }
+    ]
+  },
+  {
+    "id": "A22x1",
+    "description": "Place 2x Odds on Come Point 10",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 10
+      }
+    ]
+  },
+  {
+    "id": "A23x1",
+    "description": "Place 3x Odds on Come Point 10",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 30,
+        "point": 10
+      }
+    ]
+  },
+  {
+    "id": "A24x1",
+    "description": "Come Flat + 1x Odds on Point 4",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 4
+      }
+    ]
+  },
+  {
+    "id": "A25x1",
+    "description": "Come Flat + 2x Odds on Point 4",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 4
+      }
+    ]
+  },
+  {
+    "id": "A26x1",
+    "description": "Come Flat + 1x Odds on Point 5",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 5
+      }
+    ]
+  },
+  {
+    "id": "A27x1",
+    "description": "Come Flat + 2x Odds on Point 5",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 5
+      }
+    ]
+  },
+  {
+    "id": "A28x1",
+    "description": "Come Flat + 1x Odds on Point 6",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 6
+      }
+    ]
+  },
+  {
+    "id": "A29x1",
+    "description": "Come Flat + 2x Odds on Point 6",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 6
+      }
+    ]
+  },
+  {
+    "id": "A30x1",
+    "description": "Come Flat + 1x Odds on Point 8",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A31x1",
+    "description": "Come Flat + 2x Odds on Point 8",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A32x1",
+    "description": "Come Flat + 1x Odds on Point 9",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A33x1",
+    "description": "Come Flat + 2x Odds on Point 9",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A34x1",
+    "description": "Come Flat + 1x Odds on Point 10",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 10,
+        "point": 10
+      }
+    ]
+  },
+  {
+    "id": "A35x1",
+    "description": "Come Flat + 2x Odds on Point 10",
+    "bets": [
+      {
+        "type": "come_flat",
+        "amount": 10
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 10
+      }
+    ]
+  },
+  {
+    "id": "A36x1",
+    "description": "1x Pass Line Odds + Come Flat",
+    "bets": [
+      {
+        "type": "pass_line_odds",
+        "amount": 10
+      },
+      {
+        "type": "come_flat",
+        "amount": 10
+      }
+    ]
+  },
+  {
+    "id": "A37x1",
+    "description": "2x Pass Line Odds + Come Flat",
+    "bets": [
+      {
+        "type": "pass_line_odds",
+        "amount": 20
+      },
+      {
+        "type": "come_flat",
+        "amount": 10
+      }
+    ]
+  },
+  {
+    "id": "A38x1",
+    "description": "Odds on Come Points 4 and 8",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 4
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A39x1",
+    "description": "Odds on Come Points 4 and 9",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 4
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A40x1",
+    "description": "Odds on Come Points 4 and 10",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 4
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 10
+      }
+    ]
+  },
+  {
+    "id": "A41x1",
+    "description": "Odds on Come Points 5 and 8",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 5
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A42x1",
+    "description": "Odds on Come Points 5 and 9",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 5
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A43x1",
+    "description": "Odds on Come Points 5 and 10",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 5
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 10
+      }
+    ]
+  },
+  {
+    "id": "A44x1",
+    "description": "Odds on Come Points 6 and 8",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 6
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 8
+      }
+    ]
+  },
+  {
+    "id": "A45x1",
+    "description": "Odds on Come Points 6 and 9",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 6
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 9
+      }
+    ]
+  },
+  {
+    "id": "A46x1",
+    "description": "Odds on Come Points 6 and 10",
+    "bets": [
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 6
+      },
+      {
+        "type": "come_odds",
+        "amount": 20,
+        "point": 10
+      }
+    ]
+  }
+]
