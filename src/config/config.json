@@ -1,4 +1,21 @@
 {
-    "starting_bankroll": 1000,
-    "n_games": 100
+  "num_games": 1000,
+  "starting_bankroll": 1000,
+  "table_minimum": 10,
+  "walkaway_threshold": 1200,
+  "fixed_seed": 42,
+  "agents": {
+    "classical": {
+      "name": "ClassicalAgent",
+      "module": "agents.classical_agent"
+    },
+    "quantum": {
+      "name": "QuantumRationalAgent",
+      "module": "agents.quantum_rational_agent"
+    },
+    "qbist": {
+      "name": "QBistAgent",
+      "module": "agents.qbist_agent"
+    }
+  }
 }

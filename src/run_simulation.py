@@ -1,51 +1,52 @@
-import sys
 import os
 import json
+import importlib
+import numpy as np
+import pandas as pd
+from simulator.simulator import simulate_agent
 
-# Python path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+# --- Load configuration ---
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "config.json")
+with open(CONFIG_PATH, "r") as f:
+    config = json.load(f)
 
-from simulator.simulator import Simulator
+NUM_GAMES = config["num_games"]
+STARTING_BANKROLL = config["starting_bankroll"]
+TABLE_MINIMUM = config["table_minimum"]
+WALKAWAY_THRESHOLD = config["walkaway_threshold"]
+SEED = config["fixed_seed"]
+AGENT_SPECS = config["agents"]
 
-# Placeholder until json working
-class DummyAgent:
-    def play_round(self, bankroll):
+# --- Output directory ---
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+os.makedirs(DATA_DIR, exist_ok=True)
 
-        bet_amount = 10
-        bankroll -= bet_amount
-        return bankroll
-
-
-def load_config():
-    # More robust call to json file
-    base_dir = os.path.dirname(__file__)  # This gets the directory where run_simulation.py is
-    config_path = os.path.join(base_dir, 'simulator', 'config.json')
-
-    with open(config_path, 'r') as file:
-        config = json.load(file)
-
-    return config
-
-
+# --- Run simulations for all agents ---
 def main():
-    # Load simulation settings
-    config = load_config()
+    for agent_key, agent_info in AGENT_SPECS.items():
+        print(f"\nSimulating: {agent_key.capitalize()} Agent")
 
-    starting_bankroll = config.get('starting_bankroll', 1000)
-    n_games = config.get('n_games', 1000)
+        module = importlib.import_module(agent_info["module"])
+        AgentClass = getattr(module, agent_info["name"])
 
-    # Instantiate a dummy agent
-    agent = DummyAgent()
+        rng = np.random.default_rng(SEED)  # Same seed for each agent
 
-    # Create and run the simulator
-    simulator = Simulator(agent, starting_bankroll, n_games)
-    bankroll_history = simulator.run()
+        agent = AgentClass(
+            starting_bankroll=STARTING_BANKROLL,
+            table_minimum=TABLE_MINIMUM,
+            walkaway_threshold=WALKAWAY_THRESHOLD
+        )
 
-    # Output final results
-    final_bankroll = bankroll_history[-1]
-    print(f"Final bankroll after {n_games} games: ${final_bankroll}")
+        history = simulate_agent(agent, rng, num_games=NUM_GAMES)
 
+        df = pd.DataFrame({
+            'game': np.arange(len(history)),
+            'bankroll': history
+        })
+
+        out_path = os.path.join(DATA_DIR, f"{agent_key}_bankrolls.csv")
+        df.to_csv(out_path, index=False)
+        print(f" → Saved to {out_path}")
 
 if __name__ == "__main__":
     main()
-
