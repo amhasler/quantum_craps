@@ -1,135 +1,109 @@
-import os
-import json
-from .base_agent import BaseAgent
+# src/agents/classical_agent.py
+
+from agents.base_agent import BaseAgent
+from simulator.atomic_actions import AtomicActionGenerator
+from simulator.payouts import PAYOUT_TABLE
+from simulator.probabilities import get_bet_probs
+from agents.utils import parse_atomic
+from simulator.probabilities import OUTCOME_PROBS
+import itertools
+import numpy as np
 
 class ClassicalAgent(BaseAgent):
-    """
-    Classical rational agent that chooses from a predefined list of composite actions
-    using expected value. Tie-breakers are resolved using effective house edge loss.
-    """
-
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        payout_table=None,
+        outcome_probs=None,       # <- accept a custom dict
+        flat_bets=None,
+        max_combo_size=10,
+        **kwargs
+    ):
         super().__init__(**kwargs)
+        self.payout_table  = payout_table or PAYOUT_TABLE
+        # Use injected outcome_probs, or default to full-craps OUTCOME_PROBS
+        self.outcome_probs = outcome_probs or OUTCOME_PROBS
+        self.flat_bets     = flat_bets or ['pass_line_flat', 'come_flat']
+        self.max_combo_size= max_combo_size
+        self.action_gen    = AtomicActionGenerator()
 
     def place_pass_line_bet(self):
         if self.bankroll >= self.table_min:
-            self.bankroll -= self.table_min
-            self.bets.append({"type": "pass_line", "amount": self.table_min})
+            bet = {'type': 'pass_line_flat', 'amount': self.table_min}
+            self.bets.append(bet)
+            self.adjust_bankroll(-self.table_min)
 
-    def update_action_space(self):
-        path = os.path.join(os.path.dirname(__file__), '..', 'simulator', 'actions_classical.json')
-        with open(path, 'r') as f:
-            all_actions = json.load(f)
+    def update_action_space(self, game_state=None):
+        from simulator.game_engine import build_game_state
+        if game_state is None:
+            game_state = build_game_state(self)
+        atomic = self.action_gen.generate_atomic_actions(game_state)
+        self.legal_actions = []
+        n = len(atomic)
+        max_r = min(self.max_combo_size, n)
+        for r in range(1, max_r + 1):
+            self.legal_actions.extend(itertools.combinations(atomic, r))
 
-        legal = []
-        for action in all_actions:
-            total_cost = sum(bet["amount"] for bet in action["bets"])
-            if self.bankroll < total_cost:
-                continue
-
-            legal_flag = True
-            for bet in action["bets"]:
-                if bet["type"] == "pass_line_odds":
-                    if not self.point_established or any(b["type"] == "pass_line_odds" for b in self.bets):
-                        legal_flag = False
-                        break
-                elif bet["type"] == "come_flat":
-                    if not self.point_established:
-                        legal_flag = False
-                        break
-                elif bet["type"] == "come_odds":
-                    pt = bet["point"]
-                    if pt not in self.active_come_points:
-                        legal_flag = False
-                        break
-                    if any(b["type"] == "come_odds" and b.get("point") == pt for b in self.bets):
-                        legal_flag = False
-                        break
-
-            if legal_flag:
-                legal.append(action)
-
-        self.legal_actions = legal
+    def compute_expected_value(self, combo):
+        ev = 0.0
+        # Loop over all possible outcomes in self.outcome_probs
+        for outcome, prob in self.outcome_probs.items():
+            # Sum up the payout from every atomic bet in the combo
+            payout = 0.0
+            for bet_str in combo:
+                payout += self.payout_table.get(((bet_str.lower(),), outcome), 0)
+            ev += prob * payout
+        return ev
 
     def choose_action(self):
-        path = os.path.join(os.path.dirname(__file__), '..', 'simulator', 'actions_classical.json')
-        with open(path, 'r') as f:
-            all_actions = json.load(f)
+        if not self.legal_actions:
+            return None
+        best_ev = -np.inf
+        best_actions = []
+        for action in self.legal_actions:
+            ev = self.compute_expected_value(action)
+            if ev > best_ev:
+                best_ev, best_actions = ev, [action]
+            elif ev == best_ev:
+                best_actions.append(action)
+        if len(best_actions) == 1:
+            return best_actions[0]
+        # Tie-break by minimal flat-bet exposure
+        def expected_loss(action):
+            return sum(self.table_min for b in action if b in self.flat_bets)
+        return sorted(best_actions, key=expected_loss)[0]
 
-        current_legal = [a for a in all_actions if a["id"] in [la["id"] for la in self.legal_actions]]
-
-        def expected_value(action):
-            ev = 0.0
-            for bet in action["bets"]:
-                amt = bet["amount"]
-                if bet["type"] == "pass_line":
-                    ev += amt * -0.0142
-                elif bet["type"] == "come_flat":
-                    ev += amt * -0.0101
-                elif bet["type"] == "pass_line_odds":
-                    ev += 0.0
-                elif bet["type"] == "come_odds":
-                    pt = bet.get("point")
-                    if pt in {4, 10}:
-                        ev += amt * (0.333 * 2.0 - 0.667)
-                    elif pt in {5, 9}:
-                        ev += amt * (0.4 * 1.5 - 0.6)
-                    elif pt in {6, 8}:
-                        ev += amt * (0.4545 * 1.2 - 0.5455)
-            return ev
-
-        def effective_loss(action):
-            loss = 0.0
-            edge_map = {1: 0.0085, 2: 0.0062, 3: 0.0046, 5: 0.0039, 10: 0.0027, 100: 0.0002}
-            base = self.table_min
-
-            for bet in action["bets"]:
-                if bet["type"] in {"pass_line_odds", "come_odds"}:
-                    odds_amt = bet["amount"]
-                    total_wager = base + odds_amt
-                    multiplier = round(odds_amt / base)
-                    edge = edge_map.get(multiplier, 0.0046)
-                    loss += total_wager * edge
-            return loss
-
-        evaluated = [(a, expected_value(a)) for a in current_legal]
-        max_ev = max(ev for _, ev in evaluated)
-        tied = [a for a, ev in evaluated if ev == max_ev]
-
-        if len(tied) == 1:
-            return tied[0]["id"]
-
-        best_action = min(tied, key=effective_loss)
-        return best_action["id"]
-
-    def place_bets(self, action_id):
-        path = os.path.join(os.path.dirname(__file__), '..', 'simulator', 'actions_classical.json')
-        with open(path, 'r') as f:
-            all_actions = json.load(f)
-
-        action = next((a for a in all_actions if a["id"] == action_id), None)
-        if action is None:
+    def place_bets(self, action):
+        if not action:
             return
-
-        for bet in action["bets"]:
-            self.bankroll -= bet["amount"]
+        for bet_str in action:
+            if self.bankroll < self.table_min:
+                break
+            parts = bet_str.lower().split('_')
+            if parts[0] == 'pass' and parts[1] == 'line':
+                if len(parts) == 2:
+                    bet = {'type': 'pass_line_flat', 'amount': self.table_min, 'multiplier': 1}
+                else:
+                    mult = int(parts[-1][0])
+                    bet = {'type': 'pass_line_odds', 'amount': self.table_min, 'multiplier': mult}
+            elif parts[0] == 'come' and parts[1] == 'flat':
+                bet = {'type': 'come_flat', 'amount': self.table_min}
+            elif parts[0] == 'come' and parts[1] == 'odds':
+                mult = int(parts[2][0])
+                pt = int(parts[3])
+                bet = {'type': 'come_odds', 'amount': self.table_min, 'multiplier': mult, 'point': pt}
+            else:
+                bet = {'type': bet_str.lower(), 'amount': self.table_min}
             self.bets.append(bet)
+            self.adjust_bankroll(-self.table_min)
 
     def resolve_game(self, outcome):
-        winnings = 0
+        remaining = []
         for bet in self.bets:
-            if bet["type"] == "pass_line":
-                if outcome in ["pass_win", "point_win"]:
-                    winnings += 2 * bet["amount"]
-            elif bet["type"] == "pass_line_odds":
-                if outcome == "point_win":
-                    winnings += bet["amount"] + bet.get("odds_multiplier", 1) * self.table_min
-            elif bet["type"] == "come_flat":
-                if outcome in ["pass_win", "point_win"]:
-                    winnings += 2 * bet["amount"]
-            elif bet["type"] == "come_odds":
-                if outcome == "point_win" and bet["point"] in self.active_come_points:
-                    winnings += bet["amount"] + bet.get("odds_multiplier", 1) * self.table_min
-
-        self.bankroll += winnings
-        self.bets.clear()
+            key = ((bet['type'],), outcome)
+            mult = self.payout_table.get(key, 0)
+            if mult < 0:
+                continue
+            if mult > 0:
+                self.adjust_bankroll(bet['amount'] * mult)
+            remaining.append(bet)
+        self.bets = remaining

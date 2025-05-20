@@ -1,0 +1,11 @@
+{
+  "max_atomic_bets": 8,
+  "max_combo_size": 3,
+  "pass_line_odds_options": ["PL_Odds_1x", "PL_Odds_2x", "PL_Odds_3x"],
+  "come_flat_bet": "Come_Flat",
+  "come_points": [4, 5, 6, 8, 9, 10],
+  "come_odds_templates": ["Come_Odds_1x_on_{}", "Come_Odds_2x_on_{}", "Come_Odds_3x_on_{}"],
+  "flat_bets": ["Pass_Line_Flat", "Come_Flat"],
+  "wager_unit": 10,
+  "max_hilbert_dim": 10
+}

@@ -1,13 +1,29 @@
 {
-  "num_games": 1000,
-  "starting_bankroll": 1000,
+  "num_games": 500,
+  "starting_bankroll": 10000,
   "table_minimum": 10,
-  "walkaway_threshold": 1200,
+  "walkaway_threshold": null,
   "fixed_seed": 42,
   "agents": {
+    "random": {
+      "module": "agents.random_agent",
+      "name": "RandomAgent",
+      "params": {}
+    },
     "classical": {
+      "module": "agents.classical_agent",
       "name": "ClassicalAgent",
-      "module": "agents.classical_agent"
+      "params": {}
+    },
+    "quantum": {
+      "module": "agents.quantum_agent",
+      "name": "QuantumAgent",
+      "params": {}
+    },
+    "qbist": {
+      "module": "agents.qbist_agent",
+      "name": "QBistAgent",
+      "params": {}
     }
   }
 }
