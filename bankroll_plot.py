@@ -9,6 +9,12 @@ def main():
     data_dir = os.path.join(base_dir, 'data')
 
     agents = ['classical', 'quantum', 'qbist', 'random']
+    label_map = {
+        'classical': 'Classical',
+        'quantum': 'Quantum',
+        'qbist': 'QBist',
+        'random': 'Random'
+    }
     plt.figure(figsize=(10,6))
 
     for agent in agents:
@@ -26,13 +32,14 @@ def main():
         # Convert GameNumber to int (in case) and shift from 0-based → 1-based
         df['GameNumber'] = df['GameNumber'].astype(int) + 1
 
-        plt.plot(df['GameNumber'], df['Bankroll'], label=agent.capitalize())
+        plt.plot(df['GameNumber'], df['Bankroll'], label=label_map.get(agent, agent))
 
     plt.xlabel('Game Number')
     plt.ylabel('Bankroll')
     plt.title('Agent Bankrolls Over Games')
     plt.legend(loc='best')
     plt.tight_layout()
+    plt.savefig("/Users/amhasler/Desktop/sine_wave.png", dpi=900)
     plt.show()
 
 if __name__ == '__main__':

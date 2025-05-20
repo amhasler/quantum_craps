@@ -15,11 +15,19 @@ def main():
     quantum_cost   = np.clip(d**3, None, 1000)
     qbist_cost     = np.clip(d**5, None, 100000)
 
+    # Define custom labels for each method
+    label_map = {
+        'random': 'Random',
+        'classical': 'Classical',
+        'quantum': 'Quantum',
+        'qbist': 'QBist'
+    }
+
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.plot(d, random_cost,    marker='d', linestyle=':', label='Random')
-    ax.plot(d, classical_cost, marker='o', label='Classical')
-    ax.plot(d, quantum_cost,   marker='s', label='Quantum')
-    ax.plot(d, qbist_cost,     marker='^', label='QBist')
+    ax.plot(d, random_cost,    marker='d', linestyle=':', label=label_map['random'])
+    ax.plot(d, classical_cost, marker='o', label=label_map['classical'])
+    ax.plot(d, quantum_cost,   marker='s', label=label_map['quantum'])
+    ax.plot(d, qbist_cost,     marker='^', label=label_map['qbist'])
 
     ax.set_yscale('log')
     ax.set_xlim(0, 10)
@@ -34,6 +42,7 @@ def main():
     ax.grid(True, which='major', ls='--', lw=0.5)
     ax.legend(loc='best')
     plt.tight_layout()
+    plt.savefig("/Users/amhasler/Desktop/cost.png", dpi=900)
     plt.show()
 
 if __name__ == '__main__':
