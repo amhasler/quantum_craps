@@ -1,3 +1,4 @@
+# THANK YOU MATT WEISS!!
 from qbism import sic_povm
 
 def load_sic(d):

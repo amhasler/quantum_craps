@@ -8,31 +8,19 @@ from simulator.payouts import PAYOUT_TABLE
 from simulator.game_engine import build_game_state
 
 class RandomAgent(BaseAgent):
-    """
-    Random agent picks one of the available composite actions uniformly at random.
-    """
-
+    # Included this in all agents to keep track of variables
     def __init__(self, max_combo_size=3, **kwargs):
-        """
-        Args:
-            max_combo_size (int): maximum number of atomic bets per composite action
-            **kwargs: passed to BaseAgent (starting_bankroll, table_minimum, etc.)
-        """
         super().__init__(**kwargs)
         self.action_gen = AtomicActionGenerator()
         self.max_combo_size = max_combo_size
 
     def place_pass_line_bet(self):
-        """Always place the flat Pass Line bet on the come-out roll."""
         if self.bankroll >= self.table_min:
             self.bets.append({'type': 'pass_line_flat', 'amount': self.table_min})
             self.adjust_bankroll(-self.table_min)
 
     def update_action_space(self, game_state=None):
-        """
-        Update self.legal_actions to all combinations of legal atomic actions
-        up to max_combo_size. Rebuilds game_state internally if not provided.
-        """
+        # For tests
         if game_state is None:
             game_state = build_game_state(self)
 
@@ -44,16 +32,11 @@ class RandomAgent(BaseAgent):
             self.legal_actions.extend(itertools.combinations(atomic_actions, r))
 
     def choose_action(self):
-        """Select one of the legal composite actions uniformly at random."""
         if not self.legal_actions:
             return None
         return random.choice(self.legal_actions)
 
     def place_bets(self, action):
-        """
-        For each atomic bet in the chosen composite action, place a wager
-        equal to the table minimum (if funds allow).
-        """
         if action is None:
             return
 
@@ -65,12 +48,6 @@ class RandomAgent(BaseAgent):
             self.adjust_bankroll(-self.table_min)
 
     def resolve_game(self, outcome):
-        """
-        Resolve all active bets according to the PAYOUT_TABLE.
-        - Winning bets pay out and remain (you keep your chips on the table).
-        - Losing bets are removed.
-        - Bets with no matching entry stay on the table.
-        """
         remaining = []
         for bet in self.bets:
             key = ((bet['type'],), outcome)

@@ -3,10 +3,7 @@
 from typing import List, Dict, Any
 
 class AtomicActionGenerator:
-    """
-    Generate atomic betting options based on current game state.
-    Offers new bets each roll, but only after a point is established.
-    """
+    # Init for action generator. NEED TO IMPROVE THIS, 1X, 2X...etc. isn't quite right
     def __init__(self):
         # Betting templates
         self.pass_line_odds_options = ['PL_Odds_1x', 'PL_Odds_2x', 'PL_Odds_3x']
@@ -14,13 +11,7 @@ class AtomicActionGenerator:
         self.come_odds_templates = ['Come_Odds_1x_on_{}', 'Come_Odds_2x_on_{}', 'Come_Odds_3x_on_{}']
 
     def generate_atomic_actions(self, game_state: Dict[str, Any]) -> List[str]:
-        """
-        Generate legal atomic bets given the game state:
-        - Only after a point is established (current_point is not None)
-        - Offer the next available Pass Line Odds level
-        - Offer a Come Flat bet if not already active
-        - Offer the next available Come Odds for each active come point
-        """
+        # Generate legal bets given some game state
         atomic_actions: List[str] = []
 
         # Only allow odds and come bets once a point has been established

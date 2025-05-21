@@ -10,6 +10,7 @@ import itertools
 import numpy as np
 
 class QuantumAgent(BaseAgent):
+    # Included this in all agents to keep track of variables
     def __init__(self, max_combo_size=10, max_dim=None, **kwargs):
         super().__init__(**kwargs)
         self.max_combo_size = max_combo_size
@@ -23,6 +24,7 @@ class QuantumAgent(BaseAgent):
             self.adjust_bankroll(-self.table_min)
 
     def update_action_space(self, game_state=None):
+        # For tests
         if game_state is None:
             game_state = build_game_state(self)
         atomic_actions = self.action_gen.generate_atomic_actions(game_state)
@@ -31,10 +33,8 @@ class QuantumAgent(BaseAgent):
         for r in range(1, max_r + 1):
             self.legal_actions.extend(itertools.combinations(atomic_actions, r))
 
+    # Landed on using the same basic EV for each agent, because probs and payouts the same
     def classical_ev(self, combo):
-        """
-        Compute the true expected value of the composite action using per-bet probabilities.
-        """
         ev = 0.0
         for bet_str in combo:
             bet_type, parsed_point = parse_atomic(bet_str)
@@ -46,6 +46,7 @@ class QuantumAgent(BaseAgent):
                 ev += p * mult
         return ev
 
+    # Critical distinguishing function. Expands rho dimensions by available bets.
     def choose_action(self):
         if not self.legal_actions:
             return None

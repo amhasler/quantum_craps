@@ -1,16 +1,19 @@
 # src/agents/classical_agent.py
 
 from agents.base_agent import BaseAgent
-from simulator.atomic_actions import AtomicActionGenerator
+from simulator.atomic_actions import AtomicActionGenerator # Separate shared script. Keys to the kingdom.
 from simulator.payouts import PAYOUT_TABLE
-from simulator.probabilities import get_bet_probs
-from agents.utils import parse_atomic
+# from simulator.probabilities import get_bet_probs
+# from agents.utils import parse_atomic
 from simulator.probabilities import OUTCOME_PROBS
+# This was particularly interesting -
 import itertools
 import numpy as np
 
 class ClassicalAgent(BaseAgent):
+    # Included this in all agents to keep track of variables
     def __init__(
+        # Old habits
         self,
         payout_table=None,
         outcome_probs=None,       # <- accept a custom dict
@@ -24,18 +27,23 @@ class ClassicalAgent(BaseAgent):
         self.outcome_probs = outcome_probs or OUTCOME_PROBS
         self.flat_bets     = flat_bets or ['pass_line_flat', 'come_flat']
         self.max_combo_size= max_combo_size
+
         self.action_gen    = AtomicActionGenerator()
 
+    # Required
     def place_pass_line_bet(self):
         if self.bankroll >= self.table_min:
             bet = {'type': 'pass_line_flat', 'amount': self.table_min}
             self.bets.append(bet)
             self.adjust_bankroll(-self.table_min)
 
+    # Particularly difficult but reusable. Indexes over total legal bets and returns)
     def update_action_space(self, game_state=None):
         from simulator.game_engine import build_game_state
+        # For tests
         if game_state is None:
             game_state = build_game_state(self)
+        # Very crucial line that required
         atomic = self.action_gen.generate_atomic_actions(game_state)
         self.legal_actions = []
         n = len(atomic)
@@ -43,6 +51,7 @@ class ClassicalAgent(BaseAgent):
         for r in range(1, max_r + 1):
             self.legal_actions.extend(itertools.combinations(atomic, r))
 
+    # Ultimately the same for each
     def compute_expected_value(self, combo):
         ev = 0.0
         # Loop over all possible outcomes in self.outcome_probs
@@ -54,6 +63,7 @@ class ClassicalAgent(BaseAgent):
             ev += prob * payout
         return ev
 
+    # Key differentiator
     def choose_action(self):
         if not self.legal_actions:
             return None
@@ -72,6 +82,7 @@ class ClassicalAgent(BaseAgent):
             return sum(self.table_min for b in action if b in self.flat_bets)
         return sorted(best_actions, key=expected_loss)[0]
 
+    # Actually exeecute on action
     def place_bets(self, action):
         if not action:
             return
@@ -96,6 +107,7 @@ class ClassicalAgent(BaseAgent):
             self.bets.append(bet)
             self.adjust_bankroll(-self.table_min)
 
+    # Resolution
     def resolve_game(self, outcome):
         remaining = []
         for bet in self.bets:

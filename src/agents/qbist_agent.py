@@ -6,20 +6,19 @@ from simulator.atomic_actions import AtomicActionGenerator
 from simulator.payouts import PAYOUT_TABLE
 from simulator.probabilities import get_bet_probs
 from agents.utils import parse_atomic
-from utils.sic_utils import load_sic
+from utils.sic_utils import load_sic # Check separately
 import itertools
 
 class QBistAgent(BaseAgent):
+    # Included this in all agents to keep track of variables
     def __init__(self, max_combo_size=10, max_dim=10, **kwargs):
         super().__init__(**kwargs)
         self.max_combo_size = max_combo_size
         self.max_dim = max_dim
         self.action_gen = AtomicActionGenerator()
 
+    # Landed on using the same basic EV for each agent, because probs and payouts the same
     def classical_ev(self, combo):
-        """
-        True EV of the combo: sum over each bet’s P(win)*payout + P(lose)*payout.
-        """
         ev = 0.0
         for bet_str in combo:
             bet_type, parsed_point = parse_atomic(bet_str)
@@ -37,6 +36,7 @@ class QBistAgent(BaseAgent):
             self.adjust_bankroll(-self.table_min)
 
     def update_action_space(self, game_state=None):
+        # For tests
         if game_state is None:
             from simulator.game_engine import build_game_state
             game_state = build_game_state(self)
@@ -47,38 +47,49 @@ class QBistAgent(BaseAgent):
         for r in range(1, max_r + 1):
             self.legal_actions.extend(itertools.combinations(atomic_actions, r))
 
+    # Key differentiator. Updates dimensions based on legal bets
+    # Although techincally this could go up to 22, I capped it at 10
+    # because d=22 for SICs is insane
+    # Credit to Matt Weiss for help here
     def choose_action(self):
         if not self.legal_actions:
             return None
 
+        # Build atomic_set and cap dimension
         atomic_set = sorted({a for combo in self.legal_actions for a in combo})
         d = min(len(atomic_set), self.max_dim)
-        # load SIC projectors and build rho
-        povm = load_sic(d)
-        rho = np.eye(d) / d
+
+        # Load SIC POVM projectors (Qobj instances) and convert to numpy arrays
+        sic_qobjs = load_sic(d)  # list of d^2 Qobj projectors
+        sic = [H_i.full() for H_i in sic_qobjs]  # now each is a (d×d) ndarray
+
+        rho = np.eye(d) / d  # maximally mixed state
+
+        # Precompute p(H_i) = Tr(rho H_i)
+        p_H = [np.real(np.trace(rho @ H_i)) for H_i in sic]
 
         scores = []
         for combo in self.legal_actions:
-            # 1) Build an action vector |ψ⟩ of length d
+            # Build the action projector E_A
             action_vec = np.zeros(d, dtype=complex)
-            for atomic_label in combo:
-                if atomic_label in atomic_set:
-                    idx = atomic_set.index(atomic_label)
-                    if idx < d:
-                        action_vec[idx] = 1
-
-            # 2) Form the rank-1 projector E_A = |ψ⟩⟨ψ|
+            for label in combo:
+                idx = atomic_set.index(label)
+                if idx < d:
+                    action_vec[idx] = 1
             E_A = np.outer(action_vec, np.conj(action_vec))
 
-            # 3) QBist coherence score: Tr(ρ E_A)
-            qscore = np.real(np.trace(rho @ E_A))
+            # QBist coherence via the urgleichung
+            qscore = 0.0
+            for H_i, p_i in zip(sic, p_H):
+                overlap = np.real(np.trace(E_A @ H_i))
+                qscore += ((d + 1) * overlap - 1 / d) * p_i
 
-            # 4) True classical EV for this combo
+            # Classical EV
             ev = self.classical_ev(combo)
 
-            # 5) Combine them
             scores.append(qscore * ev)
 
+        # Normalize to probabilities
         total = sum(scores)
         if total > 0:
             probs = [s / total for s in scores]

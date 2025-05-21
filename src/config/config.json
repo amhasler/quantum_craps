@@ -2,7 +2,6 @@
   "num_games": 500,
   "starting_bankroll": 10000,
   "table_minimum": 10,
-  "walkaway_threshold": null,
   "fixed_seed": 42,
   "agents": {
     "random": {
