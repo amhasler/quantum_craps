@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # plot_bankrolls.py
 
 import os
@@ -7,6 +8,10 @@ import matplotlib.pyplot as plt
 def main():
     base_dir = os.path.dirname(__file__)
     data_dir = os.path.join(base_dir, 'data')
+    output_dir = os.path.join(base_dir, 'plots')
+
+    # ✅ Ensure output directory exists
+    os.makedirs(output_dir, exist_ok=True)
 
     agents = ['classical', 'quantum', 'qbist', 'random']
     label_map = {
@@ -15,31 +20,39 @@ def main():
         'qbist': 'QBist',
         'random': 'Random'
     }
-    plt.figure(figsize=(10,6))
+
+    starting_bankroll = 1000
+    plt.figure(figsize=(10, 6))
 
     for agent in agents:
         csv_path = os.path.join(data_dir, f'{agent}_bankrolls.csv')
         if not os.path.exists(csv_path):
-            print(f"Warning: {csv_path} not found, skipping.")
+            print(f"⚠️  Warning: {csv_path} not found, skipping.")
             continue
 
-        # Read with header row, so pandas will use the first line as column names
         df = pd.read_csv(csv_path)
-
-        # Ensure columns are named correctly
         df.columns = ['GameNumber', 'Bankroll']
-
-        # Convert GameNumber to int (in case) and shift from 0-based → 1-based
         df['GameNumber'] = df['GameNumber'].astype(int) + 1
 
-        plt.plot(df['GameNumber'], df['Bankroll'], label=label_map.get(agent, agent))
+        label = label_map.get(agent, agent.title())
+        plt.plot(df['GameNumber'], df['Bankroll'], label=label)
+
+        final = df['Bankroll'].iloc[-1]
+        plt.text(df['GameNumber'].iloc[-1], final, f'{final:.0f}', fontsize=8, ha='left', va='center')
+        print(f"{label} final bankroll: ${final:.2f}")
+
+    plt.axhline(y=starting_bankroll, color='gray', linestyle='--', linewidth=0.8, label='Starting Bankroll')
 
     plt.xlabel('Game Number')
     plt.ylabel('Bankroll')
     plt.title('Agent Bankrolls Over Games')
     plt.legend(loc='best')
+    plt.grid(True, which='major', linestyle='--', linewidth=0.5, alpha=0.6)
     plt.tight_layout()
-    plt.savefig("/Users/amhasler/Desktop/sine_wave.png", dpi=900)
+
+    output_path = os.path.join(output_dir, 'bankroll_plot.png')
+    plt.savefig(output_path, dpi=900)
+    print(f"\n✅ Saved plot to: {output_path}")
     plt.show()
 
 if __name__ == '__main__':
